@@ -1,7 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 
-const Trans = styled.tr``;
+const Trans = styled.tr`
+  background-color: ${props => (props.id % 2 === 0 ? "blue" : "")};
+`;
 
 const Name = styled.td`
   width: 160px;
