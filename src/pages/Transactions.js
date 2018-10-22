@@ -31,6 +31,21 @@ class Transactions extends Component {
     }
   };
 
+  refreshData = response => {
+    this.setState({ transactions: response.data });
+    this.setState({ unFilteredTransactions: response.data });
+  };
+
+  deleteTransaction = id => {
+    console.log(id);
+    axios.delete(`/transactions/${id}`).then(response => {
+      console.log("Transaction with id " + id + " deleted");
+      axios.get("/transactions").then(response => {
+        this.refreshData(response);
+      });
+    });
+  };
+
   // is called after the compoment is rendered
   componentDidMount() {
     axios.get("/transactions").then(response => {
@@ -44,15 +59,11 @@ class Transactions extends Component {
     let newTrans = this.state.newTransaction;
     newTrans.type = "income";
 
-    console.log("IN FUN");
     axios.post("/transactions", newTrans).then(response => {
       console.log("income added");
-      this.setState(prevState =>
-        axios.get("/transactions").then(response => {
-          this.setState({ transactions: response.data });
-          this.setState({ unFilteredTransactions: response.data });
-        })
-      );
+      axios.get("/transactions").then(response => {
+        this.refreshData(response);
+      });
     });
   };
 
@@ -63,12 +74,9 @@ class Transactions extends Component {
 
     axios.post("/transactions", newTrans).then(response => {
       console.log("expense added");
-      this.setState(prevState =>
-        axios.get("/transactions").then(response => {
-          this.setState({ transactions: response.data });
-          this.setState({ unFilteredTransactions: response.data });
-        })
-      );
+      axios.get("/transactions").then(response => {
+        this.refreshData(response);
+      });
     });
   };
 
@@ -162,9 +170,19 @@ class Transactions extends Component {
             <br />
             <table className="table table-striped">
               <tbody>
-                {transactions.map(({ name, value, type, id }) => (
-                  <Transaction key={id} name={name} value={value} type={type} />
-                ))}
+                {transactions.map(({ name, value, type, id }) => {
+                  console.log(id);
+                  return (
+                    <Transaction
+                      key={id}
+                      id={id}
+                      name={name}
+                      value={value}
+                      type={type}
+                      deleteMethod={this.deleteTransaction}
+                    />
+                  );
+                })}
                 {/* <Transaction key="hola" name="asdf" value={100} type="income"/> */}
               </tbody>
             </table>

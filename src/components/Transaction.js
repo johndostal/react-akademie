@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import axios from "../utils/axios";
 
 const Trans = styled.tr`
   background-color: ${props => (props.id % 2 === 0 ? "blue" : "")};
@@ -20,13 +21,26 @@ const Value = styled.td`
   width: 70px;
 `;
 
-const Transaction = ({ name, type, value, id }) => (
-  <Trans>
-    <Name>{name}</Name>
-    <Type type={type}>{type}</Type>
-    <Value>{value}</Value>
-  </Trans>
-);
+const Id = styled.td`
+  text-align: right;
+  width: 10px;
+`;
+
+const Transaction = ({ name, type, value, key, id, deleteMethod }) => {
+  console.log(id);
+  return (
+    <Trans key={id}>
+      <Name>{name}</Name>
+      <Type type={type}>{type}</Type>
+      <Value>{value}</Value>
+      <Id>
+        <button className="btn btn-danger" onClick={() => deleteMethod(id)}>
+          Remove
+        </button>
+      </Id>
+    </Trans>
+  );
+};
 
 export default Transaction;
 

@@ -1,62 +1,6 @@
 {
   "transactions": [
     {
-      "name": "Lorem voluptate",
-      "type": "income",
-      "value": 643,
-      "created": 1487911188000,
-      "id": 1487911188000
-    },
-    {
-      "name": "non aute",
-      "type": "income",
-      "value": 902,
-      "created": 1522370056000,
-      "id": 1522370056000
-    },
-    {
-      "name": "consectetur fugiat",
-      "type": "expense",
-      "value": 338,
-      "created": 1495252405000,
-      "id": 1495252405000
-    },
-    {
-      "name": "aliqua officia",
-      "type": "income",
-      "value": 57,
-      "created": 1494025746000,
-      "id": 1494025746000
-    },
-    {
-      "name": "consectetur velit",
-      "type": "expense",
-      "value": 154,
-      "created": 1487877787000,
-      "id": 1487877787000
-    },
-    {
-      "name": "ad nulla",
-      "type": "expense",
-      "value": 396,
-      "created": 1506766271000,
-      "id": 1506766271000
-    },
-    {
-      "name": "occaecat duis",
-      "type": "income",
-      "value": 664,
-      "created": 1499834096000,
-      "id": 1499834096000
-    },
-    {
-      "name": "minim consectetur",
-      "type": "income",
-      "value": 688,
-      "created": 1512196865000,
-      "id": 1512196865000
-    },
-    {
       "name": "elit ex",
       "type": "expense",
       "value": 493,
