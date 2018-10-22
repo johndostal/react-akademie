@@ -27,7 +27,7 @@ class Transactions extends Component {
     newTransaction: {
       name: "",
       value: 0,
-      type: "expense"
+      type: ""
     }
   };
 
@@ -39,18 +39,37 @@ class Transactions extends Component {
     });
   }
 
-  addTransaction = event => {
+  addIncome = event => {
     event.preventDefault();
-    console.log("function");
-    this.setState(
-      prevState => ({
-        transactions: prevState.transactions.concat(prevState.newTransaction),
-        unFilteredTransactions: prevState.unFilteredTransactions.concat(
-          prevState.newTransaction
-        )
-      }),
-      () => console.log("finished")
-    );
+    let newTrans = this.state.newTransaction;
+    newTrans.type = "income";
+
+    console.log("IN FUN");
+    axios.post("/transactions", newTrans).then(response => {
+      console.log("income added");
+      this.setState(prevState =>
+        axios.get("/transactions").then(response => {
+          this.setState({ transactions: response.data });
+          this.setState({ unFilteredTransactions: response.data });
+        })
+      );
+    });
+  };
+
+  addExpense = event => {
+    event.preventDefault();
+    let newTrans = this.state.newTransaction;
+    newTrans.type = "expense";
+
+    axios.post("/transactions", newTrans).then(response => {
+      console.log("expense added");
+      this.setState(prevState =>
+        axios.get("/transactions").then(response => {
+          this.setState({ transactions: response.data });
+          this.setState({ unFilteredTransactions: response.data });
+        })
+      );
+    });
   };
 
   filterType = type => {
@@ -113,10 +132,10 @@ class Transactions extends Component {
               />
               <br />
               Save as{" "}
-              <MyBtn color="success" onClick={this.addTransaction("income")}>
+              <MyBtn color="success" onClick={this.addIncome}>
                 Income
               </MyBtn>
-              <MyBtn color="danger" onClick={this.addTransaction("expense")}>
+              <MyBtn color="danger" onClick={this.addExpense}>
                 Expense
               </MyBtn>
             </form>
