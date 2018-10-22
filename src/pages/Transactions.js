@@ -1,43 +1,53 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import styled from "styled-components";
+import { Button } from "reactstrap";
 
-import data from "../data.json";
 import Transaction from "../components/Transaction";
+import axios from "../utils/axios";
 
-import Button from "../components/shared/Button";
+const CentTableDiv = styled.div`
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%;
+`;
+
+const CentDiv = styled.div`
+  margin-left: auto;
+  margin-right: auto;
+`;
+
+const MyBtn = styled(Button)`
+  color: black;
+`;
 
 class Transactions extends Component {
   state = {
     transactions: [],
-    unFilteredTransactions: []
+    unFilteredTransactions: [],
+    newTransaction: {
+      name: "",
+      value: 0,
+      type: "expense"
+    }
   };
 
   // is called after the compoment is rendered
   componentDidMount() {
-    this.setState({
-      transactions: data,
-      unFilteredTransactions: data
+    axios.get("/transactions").then(response => {
+      this.setState({ transactions: response.data });
+      this.setState({ unFilteredTransactions: response.data });
     });
   }
 
-  addTransaction = () => {
+  addTransaction = event => {
+    event.preventDefault();
     console.log("function");
-    var newTransaction = {
-      name: "Moje",
-      value: 10,
-      type: "income"
-    };
     this.setState(
       prevState => ({
-        transactions: [
-          // spread operator
-          ...prevState.transactions,
-          newTransaction
-        ],
-        unFilteredTransactions: [
-          ...prevState.unFilteredTransactions,
-          newTransaction
-        ]
+        transactions: prevState.transactions.concat(prevState.newTransaction),
+        unFilteredTransactions: prevState.unFilteredTransactions.concat(
+          prevState.newTransaction
+        )
       }),
       () => console.log("finished")
     );
@@ -59,38 +69,88 @@ class Transactions extends Component {
     }));
   };
 
+  handleTypeChange = (newTrans, event) => {
+    newTrans[event.target.type] = event.target.id;
+  };
+
+  hangleInputChange = event => {
+    const newTransactionCopy = { ...this.state.newTransaction };
+    newTransactionCopy[event.target.id] = event.target.value;
+    // newTransactionCopy[event.target.type] = event.target.id; // separatni handler
+    this.handleTypeChange(newTransactionCopy, event);
+    this.setState({ newTransaction: newTransactionCopy });
+  };
+
   render() {
+    const {
+      transactions,
+      newTransaction: { name, value, type }
+    } = this.state;
     return (
       <div>
-        <header>
-          <h1>basic page for Wallet app</h1>
-          <Link to="/overview">To overview</Link>
-          <br />
-          <form>
-            <input type="text" />
-            <br />
-            <input type="number" />
-            <br />
-            <select>
-              <option>Income</option>
+        <h1>My Wallet</h1>
+        <br />
+        <h2>Add Transaction</h2>
+        {/* <Link to="/overview">To overview</Link> */}
+        <br />
+        <div className="row">
+          <div className="col-md-6">
+            <form>
+              <input
+                className="form-control"
+                type="text"
+                id="name"
+                value={name}
+                onChange={this.hangleInputChange}
+              />
               <br />
-              <option>Expense</option>
-            </select>
-          </form>
-          <Button onClick={this.addTransaction}>Add</Button>
-          <Button onClick={() => this.filterType("income")}>Incoming</Button>
-          <Button onClick={() => this.filterType("expense")}>Outgoing</Button>
-          <Button onClick={this.showAll}>Show All</Button>
-        </header>
+              <input
+                className="form-control"
+                type="number"
+                id="value"
+                value={value}
+                onChange={this.hangleInputChange}
+              />
+              <br />
+              Save as{" "}
+              <MyBtn color="success" onClick={this.addTransaction("income")}>
+                Income
+              </MyBtn>
+              <MyBtn color="danger" onClick={this.addTransaction("expense")}>
+                Expense
+              </MyBtn>
+            </form>
+          </div>
+        </div>
 
-        <table>
-          <tbody>
-            {this.state.transactions.map(({ name, value, type, id }) => (
-              <Transaction key={id} name={name} value={value} type={type} />
-            ))}
-            {/* <Transaction key="hola" name="asdf" value={100} type="income"/> */}
-          </tbody>
-        </table>
+        <br />
+        <br />
+
+        <CentTableDiv className="row">
+          <div className="col-md-12">
+            <CentDiv className="col-md-6" align="center">
+              <MyBtn color="success" onClick={() => this.filterType("income")}>
+                Incoming
+              </MyBtn>
+              <Button color="danger" onClick={() => this.filterType("expense")}>
+                Outgoing
+              </Button>
+              <btn className="btn btn-info" onClick={this.showAll}>
+                Show All
+              </btn>
+            </CentDiv>
+            <br />
+            <br />
+            <table className="table table-striped">
+              <tbody>
+                {transactions.map(({ name, value, type, id }) => (
+                  <Transaction key={id} name={name} value={value} type={type} />
+                ))}
+                {/* <Transaction key="hola" name="asdf" value={100} type="income"/> */}
+              </tbody>
+            </table>
+          </div>
+        </CentTableDiv>
       </div>
     );
   }
