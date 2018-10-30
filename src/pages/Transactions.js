@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { Button } from "reactstrap";
 
 import Transaction from "../components/Transaction";
-import axios from "../utils/axios";
 import withTransactions from "../components/withTransactions";
 
 const CentTableDiv = styled.div`
@@ -17,10 +16,6 @@ const CentDiv = styled.div`
   margin-right: auto;
 `;
 
-const MyBtn = styled(Button)`
-  color: black;
-`;
-
 class Transactions extends Component {
   state = {
     newTransaction: {
@@ -30,63 +25,16 @@ class Transactions extends Component {
     }
   };
 
-  refreshData = response => {
-    this.setState({ transactions: response.data });
-    this.setState({ unFilteredTransactions: response.data });
-  };
-
-  deleteTransaction = id => {
-    console.log(id);
-    axios.delete(`/transactions/${id}`).then(response => {
-      console.log("Transaction with id " + id + " deleted");
-      axios.get("/transactions").then(response => {
-        this.refreshData(response);
-      });
-    });
-  };
-
-  // is called after the compoment is rendered
-  componentDidMount() {
-    // axios.get("/transactions").then(response => {
-    //   this.setState({ transactions: response.data });
-    //   this.setState({ unFilteredTransactions: response.data });
-    // });
-  }
+  componentDidMount() {}
 
   addIncome = event => {
     event.preventDefault();
-    let newTrans = this.state.newTransaction;
-    newTrans.type = "income";
-
-    axios.post("/transactions", newTrans).then(response => {
-      console.log("income added");
-      axios.get("/transactions").then(response => {
-        this.refreshData(response);
-      });
-    });
+    this.props.addIncome(this.state.newTransaction);
   };
 
   addExpense = event => {
     event.preventDefault();
-    let newTrans = this.state.newTransaction;
-    newTrans.type = "expense";
-
-    axios.post("/transactions", newTrans).then(response => {
-      console.log("expense added");
-      axios.get("/transactions").then(response => {
-        this.refreshData(response);
-      });
-    });
-  };
-
-  filterType = type => {
-    this.setState(prevState => ({
-      transactions: [
-        ...prevState.unFilteredTransactions
-          .slice()
-          .filter(transaction => transaction.type === type)
-      ]
-    }));
+    this.props.addExpense(this.state.newTransaction);
   };
 
   showAll = () => {
@@ -95,21 +43,15 @@ class Transactions extends Component {
     }));
   };
 
-  handleTypeChange = (newTrans, event) => {
-    newTrans[event.target.type] = event.target.id;
-  };
-
   hangleInputChange = event => {
     const newTransactionCopy = { ...this.state.newTransaction };
     newTransactionCopy[event.target.id] = event.target.value;
-    // newTransactionCopy[event.target.type] = event.target.id; // separatni handler
-    this.handleTypeChange(newTransactionCopy, event);
+    console.log(newTransactionCopy);
     this.setState({ newTransaction: newTransactionCopy });
   };
 
   render() {
     const {
-      transactions,
       newTransaction: { name, value }
     } = this.state;
     return (
@@ -139,12 +81,12 @@ class Transactions extends Component {
               />
               <br />
               Save as{" "}
-              <MyBtn color="success" onClick={this.addIncome}>
+              <Button color="success" onClick={this.addIncome}>
                 Income
-              </MyBtn>
-              <MyBtn color="danger" onClick={this.addExpense}>
+              </Button>
+              <Button color="danger" onClick={this.addExpense}>
                 Expense
-              </MyBtn>
+              </Button>
             </form>
           </div>
         </div>
@@ -155,13 +97,22 @@ class Transactions extends Component {
         <CentTableDiv className="row">
           <div className="col-md-12">
             <CentDiv className="col-md-6" align="center">
-              <MyBtn color="success" onClick={() => this.filterType("income")}>
+              <Button
+                color="success"
+                onClick={() => this.props.changeFilterCategory("income")}
+              >
                 Incoming
-              </MyBtn>
-              <Button color="danger" onClick={() => this.filterType("expense")}>
+              </Button>
+              <Button
+                color="danger"
+                onClick={() => this.props.changeFilterCategory("expense")}
+              >
                 Outgoing
               </Button>
-              <button className="btn btn-info" onClick={this.showAll}>
+              <button
+                className="btn btn-info"
+                onClick={() => this.props.changeFilterCategory("all")}
+              >
                 Show All
               </button>
             </CentDiv>
@@ -169,20 +120,20 @@ class Transactions extends Component {
             <br />
             <table className="table table-striped">
               <tbody>
-                {this.props.transactions.map(({ name, value, type, id }) => {
-                  console.log(id);
-                  return (
-                    <Transaction
-                      key={id}
-                      id={id}
-                      name={name}
-                      value={value}
-                      type={type}
-                      deleteMethod={this.deleteTransaction}
-                    />
-                  );
-                })}
-                {/* <Transaction key="hola" name="asdf" value={100} type="income"/> */}
+                {this.props
+                  .getFilteredTransactions()
+                  .map(({ name, value, type, id }) => {
+                    return (
+                      <Transaction
+                        key={id}
+                        id={id}
+                        name={name}
+                        value={value}
+                        type={type}
+                        deleteMethod={this.props.deleteTransaction}
+                      />
+                    );
+                  })}
               </tbody>
             </table>
           </div>

@@ -25,8 +25,7 @@ const Id = styled.td`
   width: 10px;
 `;
 
-const Transaction = ({ name, type, value, key, id, deleteMethod }) => {
-  console.log(id);
+const Transaction = ({ name, type, value, id, deleteMethod }) => {
   return (
     <Trans key={id}>
       <Name>{name}</Name>

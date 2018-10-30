@@ -5,24 +5,78 @@ const withTransactions = WrappedComponent => {
   class Wrapper extends Component {
     state = {
       transactions: [],
-      unfilteredTransactions: []
+      filterCategory: "all"
     };
 
     componentDidMount() {
       axios.get("/transactions").then(response => {
-        this.setState({ transactions: response.data });
-        this.setState({ unfilteredTransactions: response.data });
+        this.refreshData(response);
       });
     }
 
-    addTransaction(newTransaction) {
-      axios
-        .post(`https://jsonplaceholder.typicode.com/users`, { newTransaction })
-        .then(res => {});
-    }
+    refreshData = response => {
+      this.setState({ transactions: response.data });
+    };
+
+    addIncome = newTrans => {
+      newTrans.type = "income";
+      this.addTransaction(newTrans);
+    };
+
+    addExpense = newTrans => {
+      newTrans.type = "expense";
+      this.addTransaction(newTrans);
+    };
+
+    addTransaction = newTrans => {
+      axios.post("/transactions", newTrans).then(resp => {
+        axios.get("/transactions").then(response => {
+          this.refreshData(response);
+        });
+      });
+    };
+
+    deleteTransaction = id => {
+      axios.delete(`/transactions/${id}`).then(resp => {
+        axios.get("/transactions").then(response => {
+          this.refreshData(response);
+        });
+      });
+    };
+
+    getFilteredTransactions = () => {
+      const { filterCategory, transactions } = this.state;
+      switch (filterCategory) {
+        case "all":
+        default:
+          return transactions;
+        case "income":
+          return transactions.filter(
+            transaction => transaction.type === "income"
+          );
+        case "expense":
+          return transactions.filter(
+            transaction => transaction.type === "expense"
+          );
+      }
+    };
+
+    changeFilterCategory = newfilterCategory => {
+      this.setState({ filterCategory: newfilterCategory });
+    };
 
     render() {
-      return <WrappedComponent {...this.state} {...this.props} />;
+      return (
+        <WrappedComponent
+          {...this.state}
+          {...this.props}
+          addIncome={this.addIncome}
+          addExpense={this.addExpense}
+          deleteTransaction={this.deleteTransaction}
+          getFilteredTransactions={this.getFilteredTransactions}
+          changeFilterCategory={this.changeFilterCategory}
+        />
+      );
     }
   }
 
