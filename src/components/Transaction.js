@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { Button } from "reactstrap";
 
 const Trans = styled.tr`
   background-color: ${props => (props.id % 2 === 0 ? "blue" : "")};
@@ -20,22 +21,25 @@ const Value = styled.td`
   width: 70px;
 `;
 
-const Id = styled.td`
+const Edit = styled.td`
   text-align: right;
   width: 10px;
 `;
 
-const Transaction = ({ name, type, value, id, deleteMethod }) => {
+const Transaction = ({ name, type, value, id, deleteMethod, editMethod }) => {
   return (
     <Trans key={id}>
       <Name>{name}</Name>
       <Type type={type}>{type}</Type>
       <Value>{value}</Value>
-      <Id>
-        <button className="btn btn-danger" onClick={() => deleteMethod(id)}>
+      <Edit>
+        <Button color="secondary" onClick={() => editMethod(id)}>
+          Edit
+        </Button>
+        <Button color="danger" onClick={() => deleteMethod(id)}>
           Remove
-        </button>
-      </Id>
+        </Button>
+      </Edit>
     </Trans>
   );
 };

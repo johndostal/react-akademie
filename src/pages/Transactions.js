@@ -37,6 +37,12 @@ class Transactions extends Component {
     this.props.addExpense(this.state.newTransaction);
   };
 
+  editTransaction = id => {
+    this.props.setEditedTransaction(id);
+    this.setState({ newTransaction: { ...this.props.editedTransaction } });
+    // this.props.changeTransaction();
+  };
+
   showAll = () => {
     this.setState(prevState => ({
       transactions: prevState.unFilteredTransactions.slice()
@@ -46,7 +52,6 @@ class Transactions extends Component {
   hangleInputChange = event => {
     const newTransactionCopy = { ...this.state.newTransaction };
     newTransactionCopy[event.target.id] = event.target.value;
-    console.log(newTransactionCopy);
     this.setState({ newTransaction: newTransactionCopy });
   };
 
@@ -131,6 +136,7 @@ class Transactions extends Component {
                         value={value}
                         type={type}
                         deleteMethod={this.props.deleteTransaction}
+                        editMethod={this.editTransaction}
                       />
                     );
                   })}
