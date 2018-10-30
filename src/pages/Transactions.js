@@ -22,21 +22,10 @@ class Transactions extends Component {
       value: 0,
       type: ""
     },
-    editMode: false
+    filterCategory: "all"
   };
 
   componentDidMount() {}
-
-  editTransaction = id => {
-    this.setState({ editMode: true });
-    this.props.setEditedTransaction(id);
-  };
-
-  componentDidUpdate() {
-    if (this.state.editMode === true) {
-      this.setState({ newTransaction: this.props.editedTransaction });
-    }
-  }
 
   addIncome = event => {
     event.preventDefault();
@@ -66,6 +55,28 @@ class Transactions extends Component {
     newTransactionCopy[event.target.id] = event.target.value;
     console.log(newTransactionCopy);
     this.setState({ newTransaction: newTransactionCopy });
+  };
+
+  getFilteredTransactions = () => {
+    const { filterCategory } = this.state;
+    const { transactions } = this.props;
+    switch (filterCategory) {
+      case "all":
+      default:
+        return transactions;
+      case "income":
+        return transactions.filter(
+          transaction => transaction.type === "income"
+        );
+      case "expense":
+        return transactions.filter(
+          transaction => transaction.type === "expense"
+        );
+    }
+  };
+
+  changeFilterCategory = newfilterCategory => {
+    this.setState({ filterCategory: newfilterCategory });
   };
 
   render() {
@@ -122,19 +133,19 @@ class Transactions extends Component {
             <CentText>
               <Button
                 color="success"
-                onClick={() => this.props.changeFilterCategory("income")}
+                onClick={() => this.changeFilterCategory("income")}
               >
                 Incoming
               </Button>
               <Button
                 color="danger"
-                onClick={() => this.props.changeFilterCategory("expense")}
+                onClick={() => this.changeFilterCategory("expense")}
               >
                 Outgoing
               </Button>
               <button
                 className="btn btn-info"
-                onClick={() => this.props.changeFilterCategory("all")}
+                onClick={() => this.changeFilterCategory("all")}
               >
                 Show All
               </button>
@@ -143,9 +154,8 @@ class Transactions extends Component {
             <br />
             <table className="table table-striped">
               <tbody>
-                {this.props
-                  .getFilteredTransactions()
-                  .map(({ name, value, type, id }) => {
+                {this.getFilteredTransactions().map(
+                  ({ name, value, type, id }) => {
                     return (
                       <Transaction
                         key={id}
@@ -154,10 +164,10 @@ class Transactions extends Component {
                         value={value}
                         type={type}
                         deleteMethod={this.props.deleteTransaction}
-                        editMethod={this.editTransaction}
                       />
                     );
-                  })}
+                  }
+                )}
               </tbody>
             </table>
           </div>

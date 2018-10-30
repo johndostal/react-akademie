@@ -4,13 +4,7 @@ import axios from "../utils/axios";
 const withTransactions = WrappedComponent => {
   class Wrapper extends Component {
     state = {
-      transactions: [],
-      filterCategory: "all",
-      editedTransaction: {
-        name: "",
-        value: 0,
-        type: ""
-      }
+      transactions: []
     };
 
     componentDidMount() {
@@ -49,33 +43,6 @@ const withTransactions = WrappedComponent => {
       });
     };
 
-    setEditedTransaction = id => {
-      axios.get(`/transactions/${id}`).then(response => {
-        this.setState({ editedTransaction: response.data });
-      });
-    };
-
-    getFilteredTransactions = () => {
-      const { filterCategory, transactions } = this.state;
-      switch (filterCategory) {
-        case "all":
-        default:
-          return transactions;
-        case "income":
-          return transactions.filter(
-            transaction => transaction.type === "income"
-          );
-        case "expense":
-          return transactions.filter(
-            transaction => transaction.type === "expense"
-          );
-      }
-    };
-
-    changeFilterCategory = newfilterCategory => {
-      this.setState({ filterCategory: newfilterCategory });
-    };
-
     render() {
       return (
         <WrappedComponent
@@ -84,9 +51,6 @@ const withTransactions = WrappedComponent => {
           addIncome={this.addIncome}
           addExpense={this.addExpense}
           deleteTransaction={this.deleteTransaction}
-          getFilteredTransactions={this.getFilteredTransactions}
-          changeFilterCategory={this.changeFilterCategory}
-          setEditedTransaction={this.setEditedTransaction}
         />
       );
     }

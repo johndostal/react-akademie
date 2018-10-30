@@ -21,25 +21,22 @@ const Value = styled.td`
   width: 70px;
 `;
 
-const Edit = styled.td`
+const Delete = styled.td`
   text-align: right;
   width: 10px;
 `;
 
-const Transaction = ({ name, type, value, id, deleteMethod, editMethod }) => {
+const Transaction = ({ name, type, value, id, deleteMethod }) => {
   return (
     <Trans key={id}>
       <Name>{name}</Name>
       <Type type={type}>{type}</Type>
       <Value>{value}</Value>
-      <Edit>
-        <Button color="secondary" onClick={() => editMethod(id)}>
-          Edit
-        </Button>
+      <Delete>
         <Button color="danger" onClick={() => deleteMethod(id)}>
           Remove
         </Button>
-      </Edit>
+      </Delete>
     </Trans>
   );
 };
