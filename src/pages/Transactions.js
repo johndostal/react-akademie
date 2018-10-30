@@ -21,10 +21,22 @@ class Transactions extends Component {
       name: "",
       value: 0,
       type: ""
-    }
+    },
+    editMode: false
   };
 
   componentDidMount() {}
+
+  editTransaction = id => {
+    this.setState({ editMode: true });
+    this.props.setEditedTransaction(id);
+  };
+
+  componentDidUpdate() {
+    if (this.state.editMode === true) {
+      this.setState({ newTransaction: this.props.editedTransaction });
+    }
+  }
 
   addIncome = event => {
     event.preventDefault();
@@ -142,6 +154,7 @@ class Transactions extends Component {
                         value={value}
                         type={type}
                         deleteMethod={this.props.deleteTransaction}
+                        editMethod={this.editTransaction}
                       />
                     );
                   })}

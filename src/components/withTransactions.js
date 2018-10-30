@@ -5,7 +5,12 @@ const withTransactions = WrappedComponent => {
   class Wrapper extends Component {
     state = {
       transactions: [],
-      filterCategory: "all"
+      filterCategory: "all",
+      editedTransaction: {
+        name: "",
+        value: 0,
+        type: ""
+      }
     };
 
     componentDidMount() {
@@ -44,6 +49,12 @@ const withTransactions = WrappedComponent => {
       });
     };
 
+    setEditedTransaction = id => {
+      axios.get(`/transactions/${id}`).then(response => {
+        this.setState({ editedTransaction: response.data });
+      });
+    };
+
     getFilteredTransactions = () => {
       const { filterCategory, transactions } = this.state;
       switch (filterCategory) {
@@ -75,6 +86,7 @@ const withTransactions = WrappedComponent => {
           deleteTransaction={this.deleteTransaction}
           getFilteredTransactions={this.getFilteredTransactions}
           changeFilterCategory={this.changeFilterCategory}
+          setEditedTransaction={this.setEditedTransaction}
         />
       );
     }
