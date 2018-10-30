@@ -1,18 +1,15 @@
 import React, { Component } from "react";
-import styled from "styled-components";
 import { Button } from "reactstrap";
+import styled from "styled-components";
 
 import Transaction from "../components/Transaction";
 import withTransactions from "../components/withTransactions";
+import { CentText, CentTableDiv } from "../components/shared/StyledComp";
 
-const CentText = styled.div`
-  text-align: center;
-`;
-
-const CentTableDiv = styled.div`
-  margin-left: auto;
-  margin-right: auto;
-  width: 80%;
+export const OverViewBtn = styled(Button)`
+  position: absolute;
+  top: 0;
+  right: 0;
 `;
 
 class Transactions extends Component {
@@ -87,6 +84,12 @@ class Transactions extends Component {
       <div>
         <CentText>
           <h1>My Wallet</h1>
+          <OverViewBtn
+            color="primary"
+            onClick={() => this.props.history.push("/overview")}
+          >
+            Overview
+          </OverViewBtn>
           <br />
           <h2>Add Transaction</h2>
           {/* <Link to="/overview">To overview</Link> */}
