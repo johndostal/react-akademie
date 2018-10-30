@@ -1,27 +1,6 @@
 {
   "transactions": [
     {
-      "name": "elit ex",
-      "type": "expense",
-      "value": 493,
-      "created": 1520275405000,
-      "id": 1520275405000
-    },
-    {
-      "name": "fugiat veniam",
-      "type": "expense",
-      "value": 402,
-      "created": 1511915278000,
-      "id": 1511915278000
-    },
-    {
-      "name": "nulla duis",
-      "type": "expense",
-      "value": 906,
-      "created": 1506654875000,
-      "id": 1506654875000
-    },
-    {
       "name": "do ut",
       "type": "income",
       "value": 83,
@@ -533,6 +512,14 @@
       "number": "value",
       "text": "name",
       "id": 1522370056018
+    },
+    {
+      "name": "holahou",
+      "value": "234214",
+      "type": "income",
+      "text": "name",
+      "number": "value",
+      "id": 1522370056019
     }
   ]
 }

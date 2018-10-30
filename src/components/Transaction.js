@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import axios from "../utils/axios";
 
 const Trans = styled.tr`
   background-color: ${props => (props.id % 2 === 0 ? "blue" : "")};

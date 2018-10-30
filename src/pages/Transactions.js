@@ -4,6 +4,7 @@ import { Button } from "reactstrap";
 
 import Transaction from "../components/Transaction";
 import axios from "../utils/axios";
+import withTransactions from "../components/withTransactions";
 
 const CentTableDiv = styled.div`
   margin-left: auto;
@@ -22,8 +23,6 @@ const MyBtn = styled(Button)`
 
 class Transactions extends Component {
   state = {
-    transactions: [],
-    unFilteredTransactions: [],
     newTransaction: {
       name: "",
       value: 0,
@@ -48,10 +47,10 @@ class Transactions extends Component {
 
   // is called after the compoment is rendered
   componentDidMount() {
-    axios.get("/transactions").then(response => {
-      this.setState({ transactions: response.data });
-      this.setState({ unFilteredTransactions: response.data });
-    });
+    // axios.get("/transactions").then(response => {
+    //   this.setState({ transactions: response.data });
+    //   this.setState({ unFilteredTransactions: response.data });
+    // });
   }
 
   addIncome = event => {
@@ -111,7 +110,7 @@ class Transactions extends Component {
   render() {
     const {
       transactions,
-      newTransaction: { name, value, type }
+      newTransaction: { name, value }
     } = this.state;
     return (
       <div>
@@ -162,15 +161,15 @@ class Transactions extends Component {
               <Button color="danger" onClick={() => this.filterType("expense")}>
                 Outgoing
               </Button>
-              <btn className="btn btn-info" onClick={this.showAll}>
+              <button className="btn btn-info" onClick={this.showAll}>
                 Show All
-              </btn>
+              </button>
             </CentDiv>
             <br />
             <br />
             <table className="table table-striped">
               <tbody>
-                {transactions.map(({ name, value, type, id }) => {
+                {this.props.transactions.map(({ name, value, type, id }) => {
                   console.log(id);
                   return (
                     <Transaction
@@ -193,4 +192,4 @@ class Transactions extends Component {
   }
 }
 
-export default Transactions;
+export default withTransactions(Transactions);
