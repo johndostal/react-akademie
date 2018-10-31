@@ -9,3 +9,18 @@ export const CentTableDiv = styled.div`
   margin-right: auto;
   width: 80%;
 `;
+
+export const RedTd = styled.td`
+  color: white;
+  background-color: red;
+`;
+
+export const GreenTd = styled.td`
+  color: white;
+  background-color: green;
+`;
+
+export const BlueTd = styled.td`
+  color: white;
+  background-color: #17a2b8;
+`;

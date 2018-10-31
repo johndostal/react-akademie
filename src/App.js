@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import { Switch, Route } from "react-router-dom";
-import { BrowserRouter } from "react-router-dom";
+import { Switch, Route, BrowserRouter } from "react-router-dom";
 
 import Transactions from "./pages/Transactions";
 import OverviewPage from "./pages/OverviewPage";

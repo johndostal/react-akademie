@@ -2,8 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import { Button } from "reactstrap";
 
-const Trans = styled.tr`
-  background-color: ${props => (props.id % 2 === 0 ? "blue" : "")};
+const Created = styled.td`
+  width: 100px;
 `;
 
 const Name = styled.td`
@@ -12,6 +12,7 @@ const Name = styled.td`
 
 const Type = styled.td`
   width: 100px;
+  color: white;
   background-color: ${props => (props.type === "income" ? "green" : "red")};
 `;
 
@@ -26,9 +27,13 @@ const Delete = styled.td`
   width: 10px;
 `;
 
-const Transaction = ({ name, type, value, id, deleteMethod }) => {
+const Transaction = ({ created, name, type, value, id, deleteMethod }) => {
+  let date = new Date();
+  date.setTime(created);
+
   return (
-    <Trans key={id}>
+    <tr key={id}>
+      <Created>{date.toLocaleString()}</Created>
       <Name>{name}</Name>
       <Type type={type}>{type}</Type>
       <Value>{value}</Value>
@@ -37,10 +42,8 @@ const Transaction = ({ name, type, value, id, deleteMethod }) => {
           Remove
         </Button>
       </Delete>
-    </Trans>
+    </tr>
   );
 };
 
 export default Transaction;
-
-// rfce

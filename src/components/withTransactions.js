@@ -28,7 +28,12 @@ const withTransactions = WrappedComponent => {
     };
 
     addTransaction = newTrans => {
-      axios.post("/transactions", newTrans).then(resp => {
+      if (newTrans.value === 0 || newTrans.name === "") {
+        return;
+      }
+      let transWithDate = { ...newTrans };
+      transWithDate.created = new Date().getTime();
+      axios.post("/transactions", transWithDate).then(resp => {
         axios.get("/transactions").then(response => {
           this.refreshData(response);
         });

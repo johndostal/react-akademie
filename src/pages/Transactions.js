@@ -24,9 +24,7 @@ class Transactions extends Component {
 
   componentDidMount() {}
 
-  addIncome = event => {
-    event.preventDefault();
-    this.props.addIncome(this.state.newTransaction);
+  clearInput = () => {
     this.setState({
       newTransaction: {
         name: "",
@@ -36,21 +34,25 @@ class Transactions extends Component {
     });
   };
 
+  addIncome = event => {
+    event.preventDefault();
+    this.props.addIncome(this.state.newTransaction);
+    this.clearInput();
+  };
+
   addExpense = event => {
     event.preventDefault();
     this.props.addExpense(this.state.newTransaction);
-  };
-
-  showAll = () => {
-    this.setState(prevState => ({
-      transactions: prevState.unFilteredTransactions.slice()
-    }));
+    this.clearInput();
   };
 
   hangleInputChange = event => {
     const newTransactionCopy = { ...this.state.newTransaction };
-    newTransactionCopy[event.target.id] = event.target.value;
-    console.log(newTransactionCopy);
+    if (event.target.id === "value") {
+      newTransactionCopy[event.target.id] = Number(event.target.value);
+    } else {
+      newTransactionCopy[event.target.id] = event.target.value;
+    }
     this.setState({ newTransaction: newTransactionCopy });
   };
 
@@ -60,15 +62,15 @@ class Transactions extends Component {
     switch (filterCategory) {
       case "all":
       default:
-        return transactions;
+        return transactions.sort((trA, trB) => trB.created - trA.created);
       case "income":
-        return transactions.filter(
-          transaction => transaction.type === "income"
-        );
+        return transactions
+          .filter(transaction => transaction.type === "income")
+          .sort((trA, trB) => trB.created - trA.created);
       case "expense":
-        return transactions.filter(
-          transaction => transaction.type === "expense"
-        );
+        return transactions
+          .filter(transaction => transaction.type === "expense")
+          .sort((trA, trB) => trB.created - trA.created);
     }
   };
 
@@ -99,21 +101,24 @@ class Transactions extends Component {
           <div className="col-md-3" />
           <div className="col-md-6">
             <form>
-              <input
-                className="form-control"
-                type="text"
-                id="name"
-                value={name}
-                onChange={this.hangleInputChange}
-              />
-              <br />
-              <input
-                className="form-control"
-                type="number"
-                id="value"
-                value={value}
-                onChange={this.hangleInputChange}
-              />
+              <CentText>
+                Name:{" "}
+                <input
+                  className="form-control"
+                  type="text"
+                  id="name"
+                  value={name}
+                  onChange={this.hangleInputChange}
+                />
+                Amount:{" "}
+                <input
+                  className="form-control"
+                  type="number"
+                  id="value"
+                  value={value}
+                  onChange={this.hangleInputChange}
+                />
+              </CentText>
               <br />
               <CentText>
                 Save as{" "}
@@ -158,11 +163,12 @@ class Transactions extends Component {
             <table className="table table-striped">
               <tbody>
                 {this.getFilteredTransactions().map(
-                  ({ name, value, type, id }) => {
+                  ({ created, name, value, type, id }) => {
                     return (
                       <Transaction
                         key={id}
                         id={id}
+                        created={created}
                         name={name}
                         value={value}
                         type={type}
